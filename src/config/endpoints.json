@@ -1,0 +1,44 @@
+{
+    "track": {
+        "info": {
+            "url": "https://api.spotify.com/v1/audio-features",
+            "method": "GET"
+        }
+    },
+    "playlists": {
+        "info": {
+            "url": "https://api.spotify.com/v1/playlists",
+            "method": "GET"
+        }
+    },
+    "player": {
+        "skip": {
+            "url": "https://api.spotify.com/v1/me/player/next",
+            "method": "POST"
+        },
+        "previous": {
+            "url": "https://api.spotify.com/v1/me/player/previous",
+            "method": "POST"
+        },
+        "pause": {
+            "url": "https://api.spotify.com/v1/me/player/pause",
+            "method": "PUT"
+        },
+        "play": {
+            "url": "https://api.spotify.com/v1/me/player/play",
+            "method": "PUT"
+        },
+        "current": {
+            "url": "https://api.spotify.com/v1/me/player/currently-playing",
+            "method": "GET"
+        },
+        "queue": {
+            "url": "https://api.spotify.com/v1/me/player/queue",
+            "method": "POST"
+        },
+        "devices": {
+            "url": "https://api.spotify.com/v1/me/player/devices",
+            "method": "GET"
+        }
+    }
+}
