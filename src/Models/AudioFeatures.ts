@@ -2,7 +2,7 @@ export enum AudioFeatures {
     danceability,
     energy,
     liveness,
-    valence
+    valence,
 }
 
 //possible features https://developer.spotify.com/documentation/web-api/reference/#/operations/get-several-audio-features

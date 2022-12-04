@@ -9,6 +9,6 @@
     "allowJs": true
   },
   "files": [
-    "src/index.ts"
+    "src/ts/index.ts"
   ]
 }

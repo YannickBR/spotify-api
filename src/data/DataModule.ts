@@ -1,6 +1,6 @@
-import { audioFeatures, cancel } from './Constants';
-import { forEachFeature } from './ForEachHelper';
-import { Track } from './Models/Track';
+import { audioFeatures, cancel } from '../helpers/Constants';
+import { forEachFeature } from '../helpers/ForEachHelper';
+import { Track } from '../models/Track';
 import { SpotifyAPI } from './SpotifyAPI';
 let isInitialized = false;
 let spotify: SpotifyAPI;
@@ -48,8 +48,10 @@ async function processPlaylistFeatures(items: any, currentOffset: number, total:
         let track: Track = new Track(items[i].track.name, items[i].track.artists[0].name);
 
         audioFeatures.forEach(feature => {
-            //@ts-ignore
-            track[feature] = features[feature];
+            try {
+                //@ts-ignore
+                track[feature] = features[feature];
+            } catch(e) {}
         })
         track.id = current.id;
 

@@ -2,13 +2,14 @@
 
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const fs = require("fs");
 
 const isProduction = process.env.NODE_ENV == "production";
 
 const stylesHandler = "style-loader";
 
 const config = {
-  entry: "./src/index.ts",
+  entry: {},
   output: {
     path: path.resolve(__dirname, "dist"),
   },
@@ -16,15 +17,7 @@ const config = {
     open: true,
     host: "localhost",
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: "index.html",
-    }),
-
-
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
-  ],
+  plugins: [],
   module: {
     rules: [
       {
@@ -48,15 +41,32 @@ const config = {
     extensions: [".tsx", ".ts", ".jsx", ".js", "..."],
     fallback: {
       "fs": false
-  },
+    },
   },
 };
 
-module.exports = () => {
+module.exports = async () => {
+  let fileList = await fs.promises.readdir(path.resolve(__dirname, "src/ts"));
+
+  fileList.forEach((file) => {
+    const dryName = file.replace('.ts', '');
+    config.plugins.push(new HtmlWebpackPlugin({
+      chunks: [`${dryName}`],
+      template: `./src/pages/${dryName}.html`,
+      filename: `${dryName}.html`
+    }))
+
+    config.entry[dryName] = `./src/ts/${file}`
+  })
+
   if (isProduction) {
     config.mode = "production";
   } else {
     config.mode = "development";
   }
+
+  console.log(config.plugins);
+
   return config;
+
 };

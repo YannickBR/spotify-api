@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Webpack App</title>
+        <title>Spotify Playlist Analyzer</title>
         <script
   src="https://code.jquery.com/jquery-3.6.1.min.js"
   integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
@@ -11,19 +11,26 @@
   <script
   src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
   </script>
-    </head>
+    <script defer src="index.js"></script></head>
     <div class="login-container">
         <a href="?login=true">Login</a>
     </div>
+
     <div id="stats">
         <canvas id="myChart" style="width:100%;max-width:700px"></canvas>    `
     </div>
 
     <div id="controls" style="display: none;">
-        <span id="status">Not started...</span><br>
-        <input type="text" id="songId" value="2Bd8RvjaTTrYPDvBK6LXDc"><button id="scan">Scan playlist.</button><button id="cancel">Cancel</button>
+        <span id="status">Not started...</span><a href="/vote">Vote</a><br>
+        <input type="text" id="songId" value="2Bd8RvjaTTrYPDvBK6LXDc"><button id="scan">Scan playlist.</button><button id="cancel">Cancel</button><br>
+        <a id="copy"></a>
     </div>
     <div id="lists">
 
     </div>
+    <style>
+        .hover {
+            cursor: pointer;
+        }
+    </style>
 </html>

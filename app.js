@@ -5,16 +5,21 @@ const port = 80;
 
 const requestListener = function (req, res) {
     let url = req.url.split('?')[0];
-    console.log(url);
-    if(req.url == '/') {
+    if(url == '/') {
+        console.log('homepage')
         url = '/index.html';
     }
-        fs.readFile(__dirname + '/src' + url)
+    try {
+        const urls = __dirname + "/dist" + url + (url.includes('.js') || url.includes('.ico') || url.includes('.html') ? '' : '.html');
+        fs.readFile(urls)
         .then(contents => {
             res.setHeader("Content-Type", "text/html");
             res.writeHead(200);
             res.end(contents);
         })
+    } catch(e) {
+
+    }
 };
 
 

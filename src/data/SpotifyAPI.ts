@@ -1,12 +1,12 @@
 
 import { ApiCommunicator } from './ApiCommunicator';
-import endpoints from './config/endpoints.json'
+import endpoints from '../config/endpoints.json'
 
 export class SpotifyAPI {
     api: ApiCommunicator
 
-    constructor(api: ApiCommunicator) {
-        this.api = api;
+    constructor() {
+        this.api = new ApiCommunicator("ea72a2f9164444058eb992bf5135671b", "aed3610af7e54881bb6a5613a5dc700a", "http://localhost:80/", "http://localhost:80/");
     }
 
     async current() {
@@ -37,5 +37,9 @@ export class SpotifyAPI {
 
     async devices() {
         return await this.api.request(endpoints.player.devices)
+    }
+
+    async skip() {
+        return await this.api.request(endpoints.player.skip);
     }
 }

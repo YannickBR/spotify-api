@@ -1,25 +1,26 @@
-import { ApiCommunicator } from './ApiCommunicator'
-import { SpotifyAPI } from './SpotifyAPI';
-import { Initialize, getPlaylistInfo as g } from './DataModule';
-import { Track } from './Models/Track';
-import { audioFeatures, cancel, setCancel } from './Constants';
-import { forEachFeature } from './ForEachHelper'
+import { ApiCommunicator } from '../data/ApiCommunicator'
+import { SpotifyAPI } from '../data/SpotifyAPI';
+import { Initialize, getPlaylistInfo as g } from '../data/DataModule';
+import { Track } from '../models/Track';
+import { audioFeatures, cancel, setCancel } from '../helpers/Constants';
+import { forEachFeature } from '../helpers/ForEachHelper'
+import Params from '../helpers/ParamHelper';
 
-let a = new ApiCommunicator("ea72a2f9164444058eb992bf5135671b", "aed3610af7e54881bb6a5613a5dc700a", "http://localhost:8080/", "http://localhost:8080/")
-let spotify = new SpotifyAPI(a);
+let a = new ApiCommunicator("ea72a2f9164444058eb992bf5135671b", "aed3610af7e54881bb6a5613a5dc700a", "http://localhost:80/", "http://localhost:80/")
+let spotify = new SpotifyAPI();
 let rendered = false;
 let chart: object;
 let stats: any;
+let delay: number = 200;
 
 
 main();
 
 async function main() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const login = urlParams.get('login')
-    const loggedIn = urlParams.get('loggedin');
-    const code = urlParams.get('code')
-    const playlist = urlParams.get('playlist');
+    const login = Params.get('login')
+    const loggedIn = Params.get('loggedin')
+    const code = Params.get('code')
+    const playlist = Params.get('playlist')
 
     if (login) {
         await a.login();
@@ -35,20 +36,28 @@ async function main() {
 
         setupEvents();
         Initialize(spotify);
-
-        setDeviceId();
-        go();
-
-        setInterval(() => {
-            go();
-        }, 1000);
+        await setDeviceId();
+        await go();
+        loop();
+        if (playlist) {
+            getPlaylistInfo(playlist)
+        }
     }
+}
+
+function loop() {
+    setTimeout(() => {
+        go();
+        loop();
+        delay = delay*9
+        console.log(delay)
+    }, delay*2)
 }
 
 function setupEvents() {
     $('#scan').on('click', () => {
-        getPlaylistInfo();
         setStatus('Getting info...')
+        playListInfo();
     })
 
     $('#cancel').on('click', () => {
@@ -76,11 +85,19 @@ async function setDeviceId() {
 function clearUI() {
     $('#lists').empty();
 }
-
-async function getPlaylistInfo() {
-
+function playListInfo() {
     //@ts-ignore
     let id: string = $('#songId').val()
+    if(id.includes('track')) {
+        setStatus('You probably copied a track link, please enter a playlist link.')
+    } else {
+        getPlaylistInfo(id);
+    }
+}
+
+async function getPlaylistInfo(id: string) {
+
+    //@ts-ignore
     if (id[6] == '/') {
         //is a link
         id = id.replace('https://open.spotify.com/playlist/', '')
@@ -111,7 +128,6 @@ async function getPlaylistInfo() {
     } else {
         setStatus('Done.')
     }
-    console.log(stas);
 
     
     forEachFeature((feature: string) => {
@@ -119,6 +135,8 @@ async function getPlaylistInfo() {
             queue(stats[feature])
         })
     })
+
+    $('#copy').text(`${window.location.origin}?loggedin=true&playlist=${id}`)
 }
 
 async function queue(songs: Array<Track>) {
@@ -139,6 +157,7 @@ function createUI() {
 function toUI(stats: any) {
     forEachFeature((feature: string, stats: any) => {
         //@ts-ignore
+        console.log(stats);
         appendTolIst(stats[feature], `list-${feature}`)
     }, stats)
 }
@@ -147,8 +166,16 @@ function toUI(stats: any) {
 function appendTolIst(array: Array<any>, element: string) {
     //@ts-ignore
     array.reverse().forEach(track => {
-        $(`#${element}`).append(`<li>${track.title} - ${track.artist}</li>`);
+        $(`#${element}`).append(`<li><a id="${element}-${track.id}" class="hover" title="Click to play!">${track.title} - ${track.artist} </a></li>`);
+        $(`#${element}-${track.id}`).on('click', async () => {
+            await spotify.queueSong(track.id);
+            await spotify.skip();
+        })
     })
+}
+
+function play(id: string) {
+    console.log(id);
 }
 
 async function go() {
@@ -163,6 +190,9 @@ async function go() {
         //@ts-ignore
         yValues[feature] = audioFeatures[feature]
     })
+
+    delay = 60/audioFeatures.tempo*1000;
+    document.title = `${name} - ${artist} | Spotify Playlist Analyzer`
 
 
     displayChart(yValues, name + " - " + artist);
@@ -212,6 +242,8 @@ function displayChart(yValues: object, title: string) {
         } else {
             //@ts-ignore
             chart.data.datasets[0].data = yValuesData;
+                        //@ts-ignore
+            chart.data.datasets[0].backgroundColor = colors;
             //@ts-ignore
             chart.options.title.text = title;
             //@ts-ignore

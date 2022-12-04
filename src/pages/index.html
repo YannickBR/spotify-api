@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Spotify Playlist Analyzer</title>
+        <script
+  src="https://code.jquery.com/jquery-3.6.1.min.js"
+  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script
+  src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+  </script>
+    </head>
+    <div class="login-container">
+        <a href="?login=true">Login</a>
+    </div>
+
+    <div id="stats">
+        <canvas id="myChart" style="width:100%;max-width:700px"></canvas>    `
+    </div>
+
+    <div id="controls" style="display: none;">
+        <span id="status">Not started...</span><a href="/vote">Vote</a><br>
+        <input type="text" id="songId" value="2Bd8RvjaTTrYPDvBK6LXDc"><button id="scan">Scan playlist.</button><button id="cancel">Cancel</button><br>
+        <a id="copy"></a>
+    </div>
+    <div id="lists">
+
+    </div>
+    <style>
+        .hover {
+            cursor: pointer;
+        }
+    </style>
+</html>
